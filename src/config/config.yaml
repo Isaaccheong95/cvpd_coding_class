@@ -1,0 +1,61 @@
+seed: 10
+dry_run: False
+
+
+dataset: 
+    name: "cifar"
+    aug: ["v_flip"]
+    
+    mnist:
+        num_cls: 10
+        num_channels: 1
+        train_set_path:
+            root: "/home/isaac_cheongjs/coding_class_mnist/coding_mnist/data/processed/mnist/"
+            images: "train-images"
+            labels: "train-labels"
+            
+        test_set_path:
+            root: "/home/isaac_cheongjs/coding_class_mnist/coding_mnist/data/processed/mnist/"
+            images: "test-images"
+            labels: "test-labels"
+    
+    cifar:
+        num_cls: 10
+        num_channels: 3
+        root: "/home/isaac_cheongjs/coding_class_mnist/coding_mnist/data/processed/cifar/"
+
+
+architecture:
+    name: "resnet18"
+    lenet: 
+        mnist:
+            fc_size: 256
+        cifar:
+            fc_size: 400
+        
+
+lr_scheduler:
+    name: "StepLR"
+    StepLR:
+        gamma: 0.95
+        step_size: 1
+        
+    ExponentialLR:
+        gamma: 0.95
+
+
+optimizer:
+    name: "SGD"
+    SGD:
+        momentum: 0.9
+        
+    Adam:
+        betas: [0.9, 0.999]
+        eps: 1e-08
+
+
+batch_size: 128
+test_batch_size: 100
+epochs: 10
+lr: 1e-3
+log_interval: 50
