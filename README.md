@@ -1,7 +1,7 @@
 coding_mnist
 ==============================
 
-MNIST coding class for CVPD ppl.
+Coding class for CVPD.
 
 Project Organization
 ------------
