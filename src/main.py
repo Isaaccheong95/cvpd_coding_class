@@ -80,10 +80,10 @@ def main():
     lr_sched = {"StepLR": StepLR, "ExponentialLR": ExponentialLR}[
         args["lr_scheduler"]["name"]
     ]
-        
+
     augs_dict = {"h_flip": h_flip(), "v_flip": v_flip()}
     augs = [augs_dict.get(key) for key in args["dataset"]["aug"]]
-    
+
     train_set = dl(
         args=args,
         augs=augs,
@@ -98,21 +98,32 @@ def main():
         dataset=train_set, batch_size=args["batch_size"], num_workers=1, shuffle=True
     )
     test_loader = torch.utils.data.DataLoader(
-        dataset=test_set, batch_size=args["test_batch_size"], num_workers=1, shuffle=False
+        dataset=test_set,
+        batch_size=args["test_batch_size"],
+        num_workers=1,
+        shuffle=False,
     )
-    
+
     model_args = {}
     model_args["num_cls"] = args["dataset"][args["dataset"]["name"]]["num_cls"]
-    model_args["num_channels"] = args["dataset"][args["dataset"]["name"]]["num_channels"]
-    
+    model_args["num_channels"] = args["dataset"][args["dataset"]["name"]][
+        "num_channels"
+    ]
+
     if args["architecture"]["name"] in args["architecture"]:
-        model_args.update(args["architecture"][args["architecture"]["name"]][args["dataset"]["name"]])
-    
+        model_args.update(
+            args["architecture"][args["architecture"]["name"]][args["dataset"]["name"]]
+        )
+
     net = model(**model_args).to(device)
-        
+
     criterion = nn.CrossEntropyLoss()
-    optimizer = opt(net.parameters(), lr=args["lr"], **args["optimizer"][args["optimizer"]["name"]])
-    scheduler = lr_sched(optimizer, **args["lr_scheduler"][args["lr_scheduler"]["name"]])
+    optimizer = opt(
+        net.parameters(), lr=args["lr"], **args["optimizer"][args["optimizer"]["name"]]
+    )
+    scheduler = lr_sched(
+        optimizer, **args["lr_scheduler"][args["lr_scheduler"]["name"]]
+    )
 
     print("Starting training...")
 
@@ -124,12 +135,14 @@ def main():
         train(args, net, device, train_loader, optimizer, criterion, epoch)
         # Validate model
         test(net, device, test_loader, criterion)
-        
+
         # Update LR
         scheduler.step()
 
     # Save model weights
-    torch.save(net.state_dict(), f'{args["dataset"]["name"]}_{args["architecture"]["name"]}.pt')
+    torch.save(
+        net.state_dict(), f'{args["dataset"]["name"]}_{args["architecture"]["name"]}.pt'
+    )
 
 
 if __name__ == "__main__":

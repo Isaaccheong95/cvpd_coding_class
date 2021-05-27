@@ -3,26 +3,26 @@ dry_run: False
 
 
 dataset: 
-    name: "cifar"
+    name: "mnist"
     aug: ["v_flip"]
     
     mnist:
         num_cls: 10
         num_channels: 1
         train_set_path:
-            root: "/home/isaac_cheongjs/coding_class_mnist/coding_mnist/data/processed/mnist/"
+            root: "<YOUR PATH>/data/processed/mnist/"
             images: "train-images"
             labels: "train-labels"
             
         test_set_path:
-            root: "/home/isaac_cheongjs/coding_class_mnist/coding_mnist/data/processed/mnist/"
+            root: "<YOUR PATH>/data/processed/mnist/"
             images: "test-images"
             labels: "test-labels"
     
     cifar:
         num_cls: 10
         num_channels: 3
-        root: "/home/isaac_cheongjs/coding_class_mnist/coding_mnist/data/processed/cifar/"
+        root: "<YOUR PATH>/data/processed/cifar/"
 
 
 architecture:

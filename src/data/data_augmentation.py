@@ -16,13 +16,13 @@ class v_flip:
     """
 
     def __init__(self, prob_flip=0.5):
-        
+
         self.prob_flip = prob_flip
 
     def __call__(self, sample):
-        
+
         if random.random() < self.prob_flip:
-#             ic("v flip")
+            #             ic("v flip")
             sample = TF.vflip(sample)
 
         return sample
@@ -34,13 +34,13 @@ class h_flip:
     """
 
     def __init__(self, prob_flip=0.5):
-        
+
         self.prob_flip = prob_flip
 
     def __call__(self, sample):
- 
+
         if random.random() < self.prob_flip:
-#             ic("horizontal flip")
+            #             ic("horizontal flip")
             sample = TF.hflip(sample)
 
         return sample
