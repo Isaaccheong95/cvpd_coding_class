@@ -1,32 +1,30 @@
 seed: 10
-dry_run: False
-
 
 dataset: 
-    name: "mnist"
-    aug: ["v_flip"]
+    name: "cifar"
+    aug: []
     
     mnist:
         num_cls: 10
         num_channels: 1
         train_set_path:
-            root: "<YOUR PATH>/data/processed/mnist/"
+            root: "/home/isaac_cheongjs/coding_class_mnist/coding_mnist/data/processed/mnist/"
             images: "train-images"
             labels: "train-labels"
             
         test_set_path:
-            root: "<YOUR PATH>/data/processed/mnist/"
+            root: "/home/isaac_cheongjs/coding_class_mnist/coding_mnist/data/processed/mnist/"
             images: "test-images"
             labels: "test-labels"
     
     cifar:
         num_cls: 10
         num_channels: 3
-        root: "<YOUR PATH>/data/processed/cifar/"
+        root: "/home/isaac_cheongjs/coding_class_mnist/coding_mnist/data/processed/cifar/"
 
 
 architecture:
-    name: "resnet18"
+    name: "lenet"
     lenet: 
         mnist:
             fc_size: 256
@@ -56,6 +54,9 @@ optimizer:
 
 batch_size: 128
 test_batch_size: 100
-epochs: 10
+epochs: 3
 lr: 1e-3
-log_interval: 50
+
+training_args:
+    dry_run: False
+    log_interval: 50
