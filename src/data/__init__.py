@@ -1,2 +1,4 @@
-from .mnist_dl import MNISTDataloader
-from .cifar_dl import CIFARDataloader
+from .mnist_dl import MNISTDataset
+from .cifar_dl import CIFARDataset
+
+from .data_augmentation import *

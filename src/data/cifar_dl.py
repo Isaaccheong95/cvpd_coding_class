@@ -16,7 +16,7 @@ from icecream import ic
 ic.configureOutput(includeContext=True)
 
 
-class CIFARDataloader(Dataset):
+class CIFARDataset(Dataset):
     def __init__(self, args, augs=None, train=True):
 
         if train:
@@ -42,7 +42,7 @@ class CIFARDataloader(Dataset):
 
         self.args = args
         self.train = train
-        self.root = args["dataset"]["cifar"]["root"]
+        self.root = args["root"]
 
         self.ims, self.lbls = load_CIFAR10(self.root, train=train)
 
