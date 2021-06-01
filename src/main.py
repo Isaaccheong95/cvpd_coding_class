@@ -18,13 +18,10 @@ from torch import optim
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import *
 
-sys.path.append(join(os.path.dirname(os.path.abspath(__file__)), "../"))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Import dataloaders
 from data import *
-
-# Import data augmentation functions
-from data.data_augmentation import *
 
 # Import DL models
 from models.dl_architectures import *
@@ -36,7 +33,6 @@ from models.training_regimes import *
 from models.validation import *
 
 ic.configureOutput(includeContext=True)
-
 
 def set_seed(seed):
     """
@@ -68,7 +64,7 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    dl = {"mnist": MNISTDataloader, "cifar": CIFARDataloader}[args["dataset"]["name"]]
+    dl = {"mnist": MNISTDataset, "cifar": CIFARDataset}[args["dataset"]["name"]]
     model = {"lenet": Lenet, "resnet18": ResNet18}[args["architecture"]["name"]]
     train = {"lenet": train_lenet, "resnet18": train_resnet}[
         args["architecture"]["name"]
@@ -83,14 +79,16 @@ def main():
 
     augs_dict = {"h_flip": h_flip(), "v_flip": v_flip()}
     augs = [augs_dict.get(key) for key in args["dataset"]["aug"]]
+    
+    dataset_args = args["dataset"][args["dataset"]["name"]]
 
     train_set = dl(
-        args=args,
+        args=dataset_args,
         augs=augs,
     )
 
     test_set = dl(
-        args=args,
+        args=dataset_args,
         train=False,
     )
 
@@ -109,22 +107,33 @@ def main():
     model_args["num_channels"] = args["dataset"][args["dataset"]["name"]][
         "num_channels"
     ]
-
+    
     if args["architecture"]["name"] in args["architecture"]:
         model_args.update(
             args["architecture"][args["architecture"]["name"]][args["dataset"]["name"]]
         )
-
+    
     net = model(**model_args).to(device)
-
     criterion = nn.CrossEntropyLoss()
-    optimizer = opt(
-        net.parameters(), lr=args["lr"], **args["optimizer"][args["optimizer"]["name"]]
-    )
-    scheduler = lr_sched(
-        optimizer, **args["lr_scheduler"][args["lr_scheduler"]["name"]]
-    )
-
+    
+    if args["optimizer"]["name"] in args["optimizer"]:
+        optimizer = opt(
+            net.parameters(), lr=args["lr"], **args["optimizer"][args["optimizer"]["name"]]
+        )
+    else:
+        optimizer = opt(
+            net.parameters(), lr=args["lr"]
+        )
+        
+    if args["lr_scheduler"]["name"] in args["lr_scheduler"]:
+        scheduler = lr_sched(
+            optimizer, **args["lr_scheduler"][args["lr_scheduler"]["name"]]
+        )
+    else:
+        scheduler = lr_sched(
+            optimizer
+        )
+    
     print("Starting training...")
 
     # Model training begins here
@@ -132,7 +141,7 @@ def main():
         print(f'Epoch {epoch} out of {args["epochs"]}...')
 
         # Train for 1 epoch
-        train(args, net, device, train_loader, optimizer, criterion, epoch)
+        train(args["training_args"], net, device, train_loader, optimizer, criterion, epoch)
         # Validate model
         test(net, device, test_loader, criterion)
 
